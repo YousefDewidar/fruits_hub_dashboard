@@ -23,7 +23,7 @@ class _ProductsGridViewState extends State<ProductsGridView> {
   }
 
   void loadProducts() async {
-    await DatabaseServices.getAllProducts()
+    await DatabaseServices().getAllProducts()
         .then((value) => productsList = value);
     setState(() {});
   }

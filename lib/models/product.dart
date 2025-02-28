@@ -1,6 +1,7 @@
 import 'package:fruits_hub_dashboard/models/addition_info.dart';
 
 class Product {
+  final int id;
   final String title;
   final String desc;
   final num price;
@@ -13,6 +14,7 @@ class Product {
   final num soldTimes;
 
   Product({
+    required this.id,
     required this.title,
     required this.desc,
     required this.price,
@@ -42,6 +44,7 @@ class Product {
 
   factory Product.fromMap(Map<String, dynamic> map) {
     return Product(
+      id: map['id'],
       title: map['title'],
       desc: map['desc'],
       price: map['price'],

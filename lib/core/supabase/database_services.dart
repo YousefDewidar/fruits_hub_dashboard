@@ -24,12 +24,26 @@ class DatabaseServices extends SupabaseDatabase {
 
   Future<void> editProduct(
     Product product,
-    String uId,
   ) async {
     try {
-      await updateRecord(tableName: 'products', data: product.toMap(), uId: uId);
-    } catch (e) {}
+      await updateRecord(
+        tableName: 'products',
+        data: product.toMap(),
+        id: product.id.toString(),
+      );
+    } catch (e) {
+      log('error is $e');
+    }
   }
 
-  deleteProduct() async {}
+  deleteProduct(int id) async {
+    try {
+      await deleteRecord(
+        tableName: 'products',
+        id: id.toString(),
+      );
+    } catch (e) {
+      log('error is $e');
+    }
+  }
 }

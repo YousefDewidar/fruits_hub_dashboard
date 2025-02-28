@@ -40,13 +40,13 @@ class SupabaseDatabase {
   Future<void> updateRecord({
     required String tableName,
     required Map<String, dynamic> data,
-    required String uId,
+    required String id,
   }) async {
-    await supabase.from(tableName).update(data).eq('uId', uId);
+    await supabase.from(tableName).update(data).eq('id', id);
   }
 
   Future<void> deleteRecord(
-      {required String tableName, required int uId}) async {
-    await supabase.from(tableName).delete().eq('uId', uId);
+      {required String tableName, required String id}) async {
+    await supabase.from(tableName).delete().eq('id', id);
   }
 }

@@ -130,6 +130,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           await addProductToDatabase();
                           clearFileds();
                         } catch (e) {
+                          // ignore: use_build_context_synchronously
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.toString()),
@@ -167,6 +168,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   Future<void> addProductToDatabase() async {
     Product product = Product(
+      id: 0,
       title: nameController.text,
       desc: descriptionController.text,
       price: int.parse(priceController.text),

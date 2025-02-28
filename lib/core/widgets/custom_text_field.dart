@@ -26,11 +26,9 @@ class CustomTextField extends StatelessWidget {
         }
         return null;
       },
-      textDirection: TextDirection.rtl,
       style: TextStyles.semiBold16,
       decoration: InputDecoration(
         hintText: hint,
-        hintTextDirection: TextDirection.rtl,
         hintStyle: TextStyles.bold13.copyWith(color: AppColors.greyColor),
         suffixIcon: suffIcon,
         filled: true,

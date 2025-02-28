@@ -17,8 +17,14 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => const EditProductScreen()));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => EditProductScreen(
+              product: product,
+            ),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
