@@ -79,7 +79,9 @@ class _EditProductScreenState extends State<EditProductScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const AddImageWidget(),
+                  AddImageWidget(
+                    onPathChanged: (value) {},
+                  ),
                   const SpaceV(16),
                   CustomTextField(
                     controller: nameController,

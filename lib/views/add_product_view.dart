@@ -1,7 +1,11 @@
-import 'dart:io';
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:developer';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:fruits_hub_dashboard/core/supabase/database_services.dart';
+import 'package:fruits_hub_dashboard/core/supabase/storage_service.dart';
 import 'package:fruits_hub_dashboard/core/widgets/custom_text_field.dart';
 import 'package:fruits_hub_dashboard/core/widgets/space.dart';
 import 'package:fruits_hub_dashboard/models/addition_info.dart';
@@ -26,7 +30,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   late TextEditingController calaryController;
   String? expiredDateValue;
   bool isFeatured = false;
-  File? imgFile;
+  Uint8List? imagefile;
+  String? imageUrl;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -46,6 +52,39 @@ class _AddProductScreenState extends State<AddProductScreen> {
     priceController.dispose();
     discountController.dispose();
     calaryController.dispose();
+  }
+
+  void clearFileds() {
+    nameController.clear();
+    descriptionController.clear();
+    priceController.clear();
+    discountController.clear();
+    calaryController.clear();
+    expiredDateValue = null;
+    isFeatured = false;
+  }
+
+  Future<void> addProductToDatabase() async {
+    if (imageUrl != null) {
+      Product product = Product(
+        id: 0,
+        title: nameController.text,
+        desc: descriptionController.text,
+        price: int.parse(priceController.text),
+        discount: int.parse(discountController.text),
+        img: imageUrl!,
+        additionInfo: AdditionInfo(
+          calary: calaryController.text,
+          dateExpired: expiredDateValue,
+        ),
+        isFeatured: isFeatured,
+      );
+      await DatabaseServices().addProduct(product);
+    }
+  }
+
+  Future<void> uploadImageToStorage(Uint8List imageFile) async {
+    imageUrl = await StorageService.uploadImage(imageFile);
   }
 
   @override
@@ -69,7 +108,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const AddImageWidget(),
+                  AddImageWidget(
+                    onPathChanged: (value) {
+                      imagefile = value;
+                      setState(() {});
+                    },
+                  ),
                   const SpaceV(16),
                   CustomTextField(
                     controller: nameController,
@@ -127,10 +171,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     onPressed: () async {
                       if (g.currentState!.validate()) {
                         try {
+                          if (imagefile == null) throw 'يرجى تحميل صورة المنتج';
+                          isLoading = true;
+                          setState(() {});
+                          await uploadImageToStorage(imagefile!);
                           await addProductToDatabase();
                           clearFileds();
+                          isLoading = false;
+                          setState(() {});
                         } catch (e) {
-                          // ignore: use_build_context_synchronously
+                          log(e.toString());
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.toString()),
@@ -142,7 +192,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         setState(() {});
                       }
                     },
-                    child: const Text(
+                    child:isLoading? const CircularProgressIndicator(
+                      color: Colors.white,
+                    ): const Text(
                       'اضافة المنتج',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -154,33 +206,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
         ),
       ),
     );
-  }
-
-  void clearFileds() {
-    nameController.clear();
-    descriptionController.clear();
-    priceController.clear();
-    discountController.clear();
-    calaryController.clear();
-    expiredDateValue = null;
-    isFeatured = false;
-  }
-
-  Future<void> addProductToDatabase() async {
-    Product product = Product(
-      id: 0,
-      title: nameController.text,
-      desc: descriptionController.text,
-      price: int.parse(priceController.text),
-      discount: int.parse(discountController.text),
-      img: '',
-      additionInfo: AdditionInfo(
-        calary: calaryController.text,
-        dateExpired: expiredDateValue,
-      ),
-      isFeatured: isFeatured,
-    );
-    await DatabaseServices().addProduct(product);
   }
 
   List<DropdownMenuItem<String>> get dateExpiredList {
