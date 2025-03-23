@@ -1,6 +1,4 @@
 // ignore_for_file: use_build_context_synchronously
-
-import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -180,7 +178,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           isLoading = false;
                           setState(() {});
                         } catch (e) {
-                          log(e.toString());
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(e.toString()),
@@ -192,12 +189,14 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         setState(() {});
                       }
                     },
-                    child:isLoading? const CircularProgressIndicator(
-                      color: Colors.white,
-                    ): const Text(
-                      'اضافة المنتج',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                    child: isLoading
+                        ? const CircularProgressIndicator(
+                            color: Colors.white,
+                          )
+                        : const Text(
+                            'اضافة المنتج',
+                            style: TextStyle(color: Colors.white),
+                          ),
                   ),
                 ],
               ),

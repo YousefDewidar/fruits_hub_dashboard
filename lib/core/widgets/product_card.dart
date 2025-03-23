@@ -38,6 +38,7 @@ class ProductCard extends StatelessWidget {
             Center(
               child: CachedNetworkImage(
                 imageUrl: product.img,
+                height: 150,
                 placeholder: (context, url) => const Center(
                   child: CircularProgressIndicator(),
                 ),
